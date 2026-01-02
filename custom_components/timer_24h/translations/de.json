@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Zeitslot umschalten",
-      "description": "Einen bestimmten Zeitslot ein- oder ausschalten",
+      "description": "Schaltet einen bestimmten Zeitslot für den 24-Stunden-Timer ein oder aus.",
       "fields": {
-        "entity_id": {
-          "name": "Entität",
-          "description": "Die zu steuernde Timer-Entität"
-        },
         "hour": {
           "name": "Stunde",
-          "description": "Stunde (0-23)"
+          "description": "Die Stunde des Zeitslots (0-23)."
         },
         "minute": {
           "name": "Minute",
-          "description": "Minute (0 oder 30)"
+          "description": "Die Minute des Zeitslots (0 oder 30)."
         }
       }
     },
     "set_slots": {
       "name": "Zeitslots festlegen",
-      "description": "Mehrere Zeitslots auf einmal festlegen",
+      "description": "Legt mehrere Zeitslots auf einmal für den 24-Stunden-Timer fest.",
       "fields": {
-        "entity_id": {
-          "name": "Entität",
-          "description": "Die zu steuernde Timer-Entität"
-        },
         "slots": {
           "name": "Zeitslots",
-          "description": "Liste der festzulegenden Slots mit hour, minute und isActive Eigenschaften"
+          "description": "Liste der Zeitslots mit hour, minute und isActive Eigenschaften."
         }
       }
     },
     "clear_all": {
       "name": "Alle Zeitslots löschen",
-      "description": "Alle Zeitslots löschen",
-      "fields": {
-        "entity_id": {
-          "name": "Entität",
-          "description": "Die zu steuernde Timer-Entität"
-        }
-      }
+      "description": "Löscht alle Zeitslots für den 24-Stunden-Timer."
     },
     "set_enabled": {
       "name": "Aktivierung setzen",
-      "description": "Timer aktivieren oder deaktivieren",
+      "description": "Aktiviert oder deaktiviert den 24-Stunden-Timer.",
       "fields": {
-        "entity_id": {
-          "name": "Entität",
-          "description": "Die zu steuernde Timer-Entität"
-        },
         "enabled": {
           "name": "Aktiviert",
-          "description": "Ob der Timer aktiviert oder deaktiviert werden soll"
+          "description": "Ob der Timer aktiviert oder deaktiviert werden soll."
         }
       }
     }

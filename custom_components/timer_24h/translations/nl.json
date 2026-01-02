@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Tijdslot Schakelen",
-      "description": "Een specifiek tijdslot in- of uitschakelen",
+      "description": "Schakelt een specifiek tijdslot in of uit voor de 24-uurs timer.",
       "fields": {
-        "entity_id": {
-          "name": "Entity",
-          "description": "De timer entity om te besturen"
-        },
         "hour": {
           "name": "Uur",
-          "description": "Uur (0-23)"
+          "description": "Het uur van het tijdslot (0-23)."
         },
         "minute": {
           "name": "Minuut",
-          "description": "Minuut (0 of 30)"
+          "description": "De minuut van het tijdslot (0 of 30)."
         }
       }
     },
     "set_slots": {
       "name": "Tijdslots Instellen",
-      "description": "Meerdere tijdslots tegelijk instellen",
+      "description": "Stelt meerdere tijdslots tegelijk in voor de 24-uurs timer.",
       "fields": {
-        "entity_id": {
-          "name": "Entity",
-          "description": "De timer entity om te besturen"
-        },
         "slots": {
           "name": "Tijdslots",
-          "description": "Lijst van in te stellen slots met hour, minute en isActive eigenschappen"
+          "description": "Lijst van tijdslots met hour, minute en isActive eigenschappen."
         }
       }
     },
     "clear_all": {
       "name": "Alle Tijdslots Wissen",
-      "description": "Alle tijdslots wissen",
-      "fields": {
-        "entity_id": {
-          "name": "Entity",
-          "description": "De timer entity om te besturen"
-        }
-      }
+      "description": "Wist alle tijdslots voor de 24-uurs timer."
     },
     "set_enabled": {
       "name": "Inschakelen Instellen",
-      "description": "Timer in- of uitschakelen",
+      "description": "Schakelt de 24-uurs timer in of uit.",
       "fields": {
-        "entity_id": {
-          "name": "Entity",
-          "description": "De timer entity om te besturen"
-        },
         "enabled": {
           "name": "Ingeschakeld",
-          "description": "Of de timer moet worden in- of uitgeschakeld"
+          "description": "Of de timer moet worden in- of uitgeschakeld."
         }
       }
     }

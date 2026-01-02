@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Przełącz Przedział Czasowy",
-      "description": "Przełącz konkretny przedział czasowy",
+      "description": "Przełącza konkretny przedział czasowy dla timera 24-godzinnego.",
       "fields": {
-        "entity_id": {
-          "name": "Encja",
-          "description": "Encja timera do kontroli"
-        },
         "hour": {
           "name": "Godzina",
-          "description": "Godzina (0-23)"
+          "description": "Godzina przedziału czasowego (0-23)."
         },
         "minute": {
           "name": "Minuta",
-          "description": "Minuta (0 lub 30)"
+          "description": "Minuta przedziału czasowego (0 lub 30)."
         }
       }
     },
     "set_slots": {
       "name": "Ustaw Przedziały Czasowe",
-      "description": "Ustaw wiele przedziałów czasowych na raz",
+      "description": "Ustawia wiele przedziałów czasowych na raz dla timera 24-godzinnego.",
       "fields": {
-        "entity_id": {
-          "name": "Encja",
-          "description": "Encja timera do kontroli"
-        },
         "slots": {
-          "name": "Przedziały",
-          "description": "Lista przedziałów do ustawienia z właściwościami hour, minute i isActive"
+          "name": "Przedziały Czasowe",
+          "description": "Lista przedziałów czasowych z właściwościami hour, minute i isActive."
         }
       }
     },
     "clear_all": {
       "name": "Wyczyść Wszystkie Przedziały",
-      "description": "Wyczyść wszystkie przedziały czasowe",
-      "fields": {
-        "entity_id": {
-          "name": "Encja",
-          "description": "Encja timera do kontroli"
-        }
-      }
+      "description": "Czyści wszystkie przedziały czasowe dla timera 24-godzinnego."
     },
     "set_enabled": {
       "name": "Ustaw Włączenie",
-      "description": "Włącz lub wyłącz timer",
+      "description": "Włącza lub wyłącza timer 24-godzinny.",
       "fields": {
-        "entity_id": {
-          "name": "Encja",
-          "description": "Encja timera do kontroli"
-        },
         "enabled": {
           "name": "Włączony",
-          "description": "Czy timer powinien być włączony czy wyłączony"
+          "description": "Czy timer powinien być włączony czy wyłączony."
         }
       }
     }

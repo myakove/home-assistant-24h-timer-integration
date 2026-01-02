@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Basculer Créneau Horaire",
-      "description": "Basculer un créneau horaire spécifique",
+      "description": "Bascule un créneau horaire spécifique pour le minuteur de 24 heures.",
       "fields": {
-        "entity_id": {
-          "name": "Entité",
-          "description": "L'entité du minuteur à contrôler"
-        },
         "hour": {
           "name": "Heure",
-          "description": "Heure (0-23)"
+          "description": "L'heure du créneau horaire (0-23)."
         },
         "minute": {
           "name": "Minute",
-          "description": "Minute (0 ou 30)"
+          "description": "La minute du créneau horaire (0 ou 30)."
         }
       }
     },
     "set_slots": {
       "name": "Définir Créneaux Horaires",
-      "description": "Définir plusieurs créneaux horaires en une fois",
+      "description": "Définit plusieurs créneaux horaires en une fois pour le minuteur de 24 heures.",
       "fields": {
-        "entity_id": {
-          "name": "Entité",
-          "description": "L'entité du minuteur à contrôler"
-        },
         "slots": {
-          "name": "Créneaux",
-          "description": "Liste des créneaux à définir avec les propriétés hour, minute et isActive"
+          "name": "Créneaux Horaires",
+          "description": "Liste des créneaux horaires avec les propriétés hour, minute et isActive."
         }
       }
     },
     "clear_all": {
       "name": "Effacer Tous les Créneaux",
-      "description": "Effacer tous les créneaux horaires",
-      "fields": {
-        "entity_id": {
-          "name": "Entité",
-          "description": "L'entité du minuteur à contrôler"
-        }
-      }
+      "description": "Efface tous les créneaux horaires pour le minuteur de 24 heures."
     },
     "set_enabled": {
       "name": "Définir l'Activation",
-      "description": "Activer ou désactiver le minuteur",
+      "description": "Active ou désactive le minuteur de 24 heures.",
       "fields": {
-        "entity_id": {
-          "name": "Entité",
-          "description": "L'entité du minuteur à contrôler"
-        },
         "enabled": {
           "name": "Activé",
-          "description": "Si le minuteur doit être activé ou désactivé"
+          "description": "Si le minuteur doit être activé ou désactivé."
         }
       }
     }

@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Alternar Intervalo de Tiempo",
-      "description": "Alternar un intervalo de tiempo específico",
+      "description": "Alterna un intervalo de tiempo específico para el temporizador de 24 horas.",
       "fields": {
-        "entity_id": {
-          "name": "Entidad",
-          "description": "La entidad del temporizador a controlar"
-        },
         "hour": {
           "name": "Hora",
-          "description": "Hora (0-23)"
+          "description": "La hora del intervalo de tiempo (0-23)."
         },
         "minute": {
           "name": "Minuto",
-          "description": "Minuto (0 o 30)"
+          "description": "El minuto del intervalo de tiempo (0 o 30)."
         }
       }
     },
     "set_slots": {
       "name": "Establecer Intervalos de Tiempo",
-      "description": "Establecer múltiples intervalos de tiempo a la vez",
+      "description": "Establece múltiples intervalos de tiempo a la vez para el temporizador de 24 horas.",
       "fields": {
-        "entity_id": {
-          "name": "Entidad",
-          "description": "La entidad del temporizador a controlar"
-        },
         "slots": {
-          "name": "Intervalos",
-          "description": "Lista de intervalos a establecer con propiedades de hora, minuto e isActive"
+          "name": "Intervalos de Tiempo",
+          "description": "Lista de intervalos de tiempo con propiedades de hora, minuto e isActive."
         }
       }
     },
     "clear_all": {
       "name": "Limpiar Todos los Intervalos",
-      "description": "Limpiar todos los intervalos de tiempo",
-      "fields": {
-        "entity_id": {
-          "name": "Entidad",
-          "description": "La entidad del temporizador a controlar"
-        }
-      }
+      "description": "Limpia todos los intervalos de tiempo para el temporizador de 24 horas."
     },
     "set_enabled": {
       "name": "Establecer Habilitado",
-      "description": "Habilitar o deshabilitar el temporizador",
+      "description": "Habilita o deshabilita el temporizador de 24 horas.",
       "fields": {
-        "entity_id": {
-          "name": "Entidad",
-          "description": "La entidad del temporizador a controlar"
-        },
         "enabled": {
           "name": "Habilitado",
-          "description": "Si el temporizador debe estar habilitado o deshabilitado"
+          "description": "Si el temporizador debe estar habilitado o deshabilitado."
         }
       }
     }

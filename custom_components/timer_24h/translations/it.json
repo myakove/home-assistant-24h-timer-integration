@@ -48,57 +48,39 @@
   "services": {
     "toggle_slot": {
       "name": "Commuta Fascia Oraria",
-      "description": "Commuta una fascia oraria specifica",
+      "description": "Commuta una fascia oraria specifica per il timer di 24 ore.",
       "fields": {
-        "entity_id": {
-          "name": "Entità",
-          "description": "L'entità del timer da controllare"
-        },
         "hour": {
           "name": "Ora",
-          "description": "Ora (0-23)"
+          "description": "L'ora della fascia oraria (0-23)."
         },
         "minute": {
           "name": "Minuto",
-          "description": "Minuto (0 o 30)"
+          "description": "Il minuto della fascia oraria (0 o 30)."
         }
       }
     },
     "set_slots": {
       "name": "Imposta Fasce Orarie",
-      "description": "Imposta più fasce orarie contemporaneamente",
+      "description": "Imposta più fasce orarie contemporaneamente per il timer di 24 ore.",
       "fields": {
-        "entity_id": {
-          "name": "Entità",
-          "description": "L'entità del timer da controllare"
-        },
         "slots": {
-          "name": "Fasce",
-          "description": "Elenco di fasce da impostare con proprietà hour, minute e isActive"
+          "name": "Fasce Orarie",
+          "description": "Elenco di fasce orarie con proprietà hour, minute e isActive."
         }
       }
     },
     "clear_all": {
       "name": "Cancella Tutte le Fasce",
-      "description": "Cancella tutte le fasce orarie",
-      "fields": {
-        "entity_id": {
-          "name": "Entità",
-          "description": "L'entità del timer da controllare"
-        }
-      }
+      "description": "Cancella tutte le fasce orarie per il timer di 24 ore."
     },
     "set_enabled": {
       "name": "Imposta Abilitazione",
-      "description": "Abilita o disabilita il timer",
+      "description": "Abilita o disabilita il timer di 24 ore.",
       "fields": {
-        "entity_id": {
-          "name": "Entità",
-          "description": "L'entità del timer da controllare"
-        },
         "enabled": {
           "name": "Abilitato",
-          "description": "Se il timer deve essere abilitato o disabilitato"
+          "description": "Se il timer deve essere abilitato o disabilitato."
         }
       }
     }
