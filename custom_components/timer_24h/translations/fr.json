@@ -87,6 +87,20 @@
           "description": "L'entité du minuteur à contrôler"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Set Enabled",
+      "description": "Enable or disable the timer",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "The timer entity to control"
+        },
+        "enabled": {
+          "name": "Enabled",
+          "description": "Whether the timer should be enabled or disabled"
+        }
+      }
     }
   }
 }
