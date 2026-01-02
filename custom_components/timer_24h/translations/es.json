@@ -87,6 +87,20 @@
           "description": "La entidad del temporizador a controlar"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Establecer Habilitado",
+      "description": "Habilitar o deshabilitar el temporizador",
+      "fields": {
+        "entity_id": {
+          "name": "Entidad",
+          "description": "La entidad del temporizador a controlar"
+        },
+        "enabled": {
+          "name": "Habilitado",
+          "description": "Si el temporizador debe estar habilitado o deshabilitado"
+        }
+      }
     }
   }
 }

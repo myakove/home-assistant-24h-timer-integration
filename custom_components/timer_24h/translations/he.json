@@ -87,6 +87,20 @@
           "description": "ישות הטיימר לשליטה"
         }
       }
+    },
+    "set_enabled": {
+      "name": "הגדרת מצב הפעלה",
+      "description": "הפעלה או כיבוי הטיימר",
+      "fields": {
+        "entity_id": {
+          "name": "ישות",
+          "description": "ישות הטיימר לשליטה"
+        },
+        "enabled": {
+          "name": "מופעל",
+          "description": "האם הטיימר צריך להיות מופעל או מכובה"
+        }
+      }
     }
   }
 }
