@@ -87,6 +87,20 @@
           "description": "Encja timera do kontroli"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Ustaw Włączenie",
+      "description": "Włącz lub wyłącz timer",
+      "fields": {
+        "entity_id": {
+          "name": "Encja",
+          "description": "Encja timera do kontroli"
+        },
+        "enabled": {
+          "name": "Włączony",
+          "description": "Czy timer powinien być włączony czy wyłączony"
+        }
+      }
     }
   }
 }

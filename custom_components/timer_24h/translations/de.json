@@ -87,6 +87,20 @@
           "description": "Die zu steuernde Timer-Entität"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Aktivierung setzen",
+      "description": "Timer aktivieren oder deaktivieren",
+      "fields": {
+        "entity_id": {
+          "name": "Entität",
+          "description": "Die zu steuernde Timer-Entität"
+        },
+        "enabled": {
+          "name": "Aktiviert",
+          "description": "Ob der Timer aktiviert oder deaktiviert werden soll"
+        }
+      }
     }
   }
 }

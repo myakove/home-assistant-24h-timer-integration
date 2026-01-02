@@ -87,6 +87,20 @@
           "description": "L'entità del timer da controllare"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Imposta Abilitazione",
+      "description": "Abilita o disabilita il timer",
+      "fields": {
+        "entity_id": {
+          "name": "Entità",
+          "description": "L'entità del timer da controllare"
+        },
+        "enabled": {
+          "name": "Abilitato",
+          "description": "Se il timer deve essere abilitato o disabilitato"
+        }
+      }
     }
   }
 }

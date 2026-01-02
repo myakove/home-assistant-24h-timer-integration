@@ -87,6 +87,20 @@
           "description": "De timer entity om te besturen"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Inschakelen Instellen",
+      "description": "Timer in- of uitschakelen",
+      "fields": {
+        "entity_id": {
+          "name": "Entity",
+          "description": "De timer entity om te besturen"
+        },
+        "enabled": {
+          "name": "Ingeschakeld",
+          "description": "Of de timer moet worden in- of uitgeschakeld"
+        }
+      }
     }
   }
 }

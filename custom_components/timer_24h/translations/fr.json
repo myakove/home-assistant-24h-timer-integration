@@ -87,6 +87,20 @@
           "description": "L'entité du minuteur à contrôler"
         }
       }
+    },
+    "set_enabled": {
+      "name": "Définir l'Activation",
+      "description": "Activer ou désactiver le minuteur",
+      "fields": {
+        "entity_id": {
+          "name": "Entité",
+          "description": "L'entité du minuteur à contrôler"
+        },
+        "enabled": {
+          "name": "Activé",
+          "description": "Si le minuteur doit être activé ou désactivé"
+        }
+      }
     }
   }
 }
