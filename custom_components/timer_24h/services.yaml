@@ -1,18 +1,19 @@
 toggle_slot:
-  name: Toggle Time Slot
-  description: Toggles a specific time slot on or off for the 24-hour timer.
+  name: "Toggle Time Slot"
+  description: "Toggles a specific time slot on or off for the 24-hour timer."
   fields:
     entity_id:
-      name: Entity
-      description: The timer entity to modify.
-      required: true
+      name: "Entity ID"
+      description: "The entity ID of the 24-hour timer sensor."
+      required: false
+      example: "sensor.boiler_boiler"
       selector:
         entity:
           integration: timer_24h
           domain: sensor
     hour:
-      name: Hour
-      description: The hour of the time slot (0-23).
+      name: "Hour"
+      description: "The hour of the time slot (0-23)."
       required: true
       selector:
         number:
@@ -20,8 +21,8 @@ toggle_slot:
           max: 23
           mode: box
     minute:
-      name: Minute
-      description: The minute of the time slot (0 or 30).
+      name: "Minute"
+      description: "The minute of the time slot (0 or 30)."
       required: true
       selector:
         select:
@@ -32,53 +33,56 @@ toggle_slot:
               value: 30
 
 set_slots:
-  name: Set Time Slots
-  description: Sets multiple time slots at once, replacing all existing slots.
+  name: "Set Time Slots"
+  description: "Sets multiple time slots at once for the 24-hour timer. Each slot must have 'hour' (0-23), 'minute' (0 or 30), and optionally 'isActive' (boolean, defaults to false)."
   fields:
     entity_id:
-      name: Entity
-      description: The timer entity to modify.
-      required: true
+      name: "Entity ID"
+      description: "The entity ID of the 24-hour timer sensor."
+      required: false
+      example: "sensor.boiler_boiler"
       selector:
         entity:
           integration: timer_24h
           domain: sensor
     slots:
-      name: Time Slots
-      description: List of time slots to enable. Each slot must have 'hour' (0-23) and 'minute' (0 or 30) keys.
+      name: "Time Slots"
+      description: "List of time slots to set. Each slot must have 'hour' (0-23), 'minute' (0 or 30), and optionally 'isActive' (boolean, defaults to false)."
       required: true
-      example: '[{"hour": 8, "minute": 0}, {"hour": 12, "minute": 30}]'
+      example: '[{"hour": 16, "minute": 0, "isActive": true}, {"hour": 8, "minute": 30, "isActive": false}]'
       selector:
         object:
 
 clear_all:
-  name: Clear All Time Slots
-  description: Removes all configured time slots from the timer.
+  name: "Clear All Slots"
+  description: "Clears all time slots for the 24-hour timer."
   fields:
     entity_id:
-      name: Entity
-      description: The timer entity to clear.
-      required: true
+      name: "Entity ID"
+      description: "The entity ID of the 24-hour timer sensor."
+      required: false
+      example: "sensor.boiler_boiler"
       selector:
         entity:
           integration: timer_24h
           domain: sensor
 
 set_enabled:
-  name: Set Enabled State
-  description: Enables or disables the timer without removing time slots.
+  name: "Set Enabled"
+  description: "Enables or disables the 24-hour timer."
   fields:
     entity_id:
-      name: Entity
-      description: The timer entity to enable or disable.
-      required: true
+      name: "Entity ID"
+      description: "The entity ID of the 24-hour timer sensor."
+      required: false
+      example: "sensor.boiler_boiler"
       selector:
         entity:
           integration: timer_24h
           domain: sensor
     enabled:
-      name: Enabled
-      description: Whether to enable or disable the timer.
+      name: "Enabled"
+      description: "Whether the timer should be enabled or disabled."
       required: true
       selector:
         boolean:
