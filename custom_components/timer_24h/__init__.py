@@ -1,9 +1,9 @@
 """The Timer 24H integration."""
+
 from __future__ import annotations
 
 import json
 import logging
-import os
 import shutil
 from pathlib import Path
 
@@ -16,6 +16,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.lovelace.resources import ResourceStorageCollection
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.service import async_extract_entity_ids
 
 from .const import (
     ATTR_HOUR,
@@ -36,38 +37,44 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 async def init_lovelace_resource(hass: HomeAssistant, url: str, version: str) -> bool:
     """Add/update lovelace resource with proper version handling.
-    
+
     Based on the approach used by ha-simple-timer integration.
     """
     try:
         resources: ResourceStorageCollection = hass.data["lovelace"].resources
         # Force load storage - THIS IS THE KEY!
         await resources.async_get_info()
-        
+
         url_with_version = f"{url}?v={version}"
-        
+
         # Check if resource already exists
         for item in resources.async_items():
             if not item.get("url", "").startswith(url):
                 continue
-            
+
             # Already has correct version
             if item["url"].endswith(version):
                 _LOGGER.info("✅ Timer 24H resource already at version %s", version)
                 return False
-            
+
             # Update to new version
-            _LOGGER.info("🔄 Updating Timer 24H resource from %s to %s", item["url"], url_with_version)
+            _LOGGER.info(
+                "🔄 Updating Timer 24H resource from %s to %s",
+                item["url"],
+                url_with_version,
+            )
             await resources.async_update_item(
                 item["id"], {"res_type": "module", "url": url_with_version}
             )
             return True
-        
+
         # Create new resource
         _LOGGER.info("✅ Creating new Timer 24H resource: %s", url_with_version)
-        await resources.async_create_item({"res_type": "module", "url": url_with_version})
+        await resources.async_create_item(
+            {"res_type": "module", "url": url_with_version}
+        )
         return True
-        
+
     except Exception as err:
         _LOGGER.error("❌ Failed to register lovelace resource: %s", err)
         return False
@@ -76,19 +83,21 @@ async def init_lovelace_resource(hass: HomeAssistant, url: str, version: str) ->
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Timer 24H component."""
     hass.data.setdefault(DOMAIN, {})
-    
+
     # Install card files automatically
     await _async_install_card(hass)
-    
+
     # Register static path for the card
-    await hass.http.async_register_static_paths([
-        StaticPathConfig(
-            "/local/timer-24h-card/timer-24h-card.js",
-            hass.config.path("www/timer-24h-card/timer-24h-card.js"),
-            True
-        )
-    ])
-    
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                "/local/timer-24h-card/timer-24h-card.js",
+                hass.config.path("www/timer-24h-card/timer-24h-card.js"),
+                True,
+            )
+        ]
+    )
+
     # Get version from manifest
     integration_path = Path(__file__).parent
     manifest_path = integration_path / "manifest.json"
@@ -99,11 +108,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             version = manifest.get("version", "1.0.0")
     except Exception as err:
         _LOGGER.warning("Could not read version from manifest: %s", err)
-    
+
     # Register lovelace resource
     _LOGGER.info("🔵 Timer 24H: Registering lovelace resource (version %s)", version)
-    await init_lovelace_resource(hass, "/local/timer-24h-card/timer-24h-card.js", version)
-    
+    await init_lovelace_resource(
+        hass, "/local/timer-24h-card/timer-24h-card.js", version
+    )
+
     return True
 
 
@@ -142,9 +153,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Cleanup state listeners before unloading
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     coordinator.cleanup_state_listeners()
-    
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    
+
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
@@ -156,79 +167,156 @@ async def _async_register_services(hass: HomeAssistant) -> None:
 
     async def handle_toggle_slot(call: ServiceCall) -> None:
         """Handle the toggle_slot service call."""
-        entity_id = call.data.get("entity_id")
+        # Support both target selector and legacy entity_id field
+        entity_ids = call.data.get("entity_id")
+        if entity_ids is None:
+            # Try to get from target selector
+            entity_ids = await async_extract_entity_ids(hass, call)
+
+        if isinstance(entity_ids, str):
+            entity_ids = [entity_ids]
+
         hour = call.data.get(ATTR_HOUR)
         minute = call.data.get(ATTR_MINUTE)
 
-        _LOGGER.info("🔵 SERVICE CALLED: toggle_slot(entity=%s, hour=%s, minute=%s)", entity_id, hour, minute)
+        for entity_id in entity_ids:
+            _LOGGER.info(
+                "🔵 SERVICE CALLED: toggle_slot(entity=%s, hour=%s, minute=%s)",
+                entity_id,
+                hour,
+                minute,
+            )
 
-        # Find the coordinator for this entity
-        for entry_id, data in hass.data[DOMAIN].items():
-            if isinstance(data, dict) and "coordinator" in data:
-                coordinator = data["coordinator"]
-                
-                # Get all sensor entities for this integration instance
-                entity_registry = er.async_get(hass)
-                for entity_entry in entity_registry.entities.values():
-                    if (entity_entry.config_entry_id == coordinator.config_entry.entry_id 
-                        and entity_entry.entity_id == entity_id):
-                        _LOGGER.info("✅ Found matching coordinator for entity_id=%s", entity_id)
-                        await coordinator.async_toggle_slot(hour, minute)
-                        return
-        
-        _LOGGER.warning("❌ No coordinator found for entity_id=%s", entity_id)
+            # Find the coordinator for this entity
+            for entry_id, data in hass.data[DOMAIN].items():
+                if isinstance(data, dict) and "coordinator" in data:
+                    coordinator = data["coordinator"]
+
+                    # Get all sensor entities for this integration instance
+                    entity_registry = er.async_get(hass)
+                    for entity_entry in entity_registry.entities.values():
+                        if (
+                            entity_entry.config_entry_id
+                            == coordinator.config_entry.entry_id
+                            and entity_entry.entity_id == entity_id
+                        ):
+                            _LOGGER.info(
+                                "✅ Found matching coordinator for entity_id=%s",
+                                entity_id,
+                            )
+                            await coordinator.async_toggle_slot(hour, minute)
+                            break
+                    else:
+                        continue
+                    break
+            else:
+                _LOGGER.warning("❌ No coordinator found for entity_id=%s", entity_id)
 
     async def handle_set_slots(call: ServiceCall) -> None:
         """Handle the set_slots service call."""
-        entity_id = call.data.get("entity_id")
+        # Support both target selector and legacy entity_id field
+        entity_ids = call.data.get("entity_id")
+        if entity_ids is None:
+            # Try to get from target selector
+            entity_ids = await async_extract_entity_ids(hass, call)
+
+        if isinstance(entity_ids, str):
+            entity_ids = [entity_ids]
+
         slots = call.data.get(ATTR_SLOTS)
 
-        for entry_id, data in hass.data[DOMAIN].items():
-            if isinstance(data, dict) and "coordinator" in data:
-                coordinator = data["coordinator"]
-                
-                entity_registry = er.async_get(hass)
-                for entity_entry in entity_registry.entities.values():
-                    if (entity_entry.config_entry_id == coordinator.config_entry.entry_id 
-                        and entity_entry.entity_id == entity_id):
-                        await coordinator.async_set_slots(slots)
-                        return
+        for entity_id in entity_ids:
+            # Find the coordinator for this entity
+            for entry_id, data in hass.data[DOMAIN].items():
+                if isinstance(data, dict) and "coordinator" in data:
+                    coordinator = data["coordinator"]
+
+                    entity_registry = er.async_get(hass)
+                    for entity_entry in entity_registry.entities.values():
+                        if (
+                            entity_entry.config_entry_id
+                            == coordinator.config_entry.entry_id
+                            and entity_entry.entity_id == entity_id
+                        ):
+                            await coordinator.async_set_slots(slots)
+                            break
+                    else:
+                        continue
+                    break
 
     async def handle_clear_all(call: ServiceCall) -> None:
         """Handle the clear_all service call."""
-        entity_id = call.data.get("entity_id")
+        # Support both target selector and legacy entity_id field
+        entity_ids = call.data.get("entity_id")
+        if entity_ids is None:
+            # Try to get from target selector
+            entity_ids = await async_extract_entity_ids(hass, call)
 
-        for entry_id, data in hass.data[DOMAIN].items():
-            if isinstance(data, dict) and "coordinator" in data:
-                coordinator = data["coordinator"]
-                
-                entity_registry = er.async_get(hass)
-                for entity_entry in entity_registry.entities.values():
-                    if (entity_entry.config_entry_id == coordinator.config_entry.entry_id 
-                        and entity_entry.entity_id == entity_id):
-                        await coordinator.async_clear_all()
-                        return
-    
+        if isinstance(entity_ids, str):
+            entity_ids = [entity_ids]
+
+        for entity_id in entity_ids:
+            # Find the coordinator for this entity
+            for entry_id, data in hass.data[DOMAIN].items():
+                if isinstance(data, dict) and "coordinator" in data:
+                    coordinator = data["coordinator"]
+
+                    entity_registry = er.async_get(hass)
+                    for entity_entry in entity_registry.entities.values():
+                        if (
+                            entity_entry.config_entry_id
+                            == coordinator.config_entry.entry_id
+                            and entity_entry.entity_id == entity_id
+                        ):
+                            await coordinator.async_clear_all()
+                            break
+                    else:
+                        continue
+                    break
+
     async def handle_set_enabled(call: ServiceCall) -> None:
         """Handle the set_enabled service call."""
-        entity_id = call.data.get("entity_id")
+        # Support both target selector and legacy entity_id field
+        entity_ids = call.data.get("entity_id")
+        if entity_ids is None:
+            # Try to get from target selector
+            entity_ids = await async_extract_entity_ids(hass, call)
+
+        if isinstance(entity_ids, str):
+            entity_ids = [entity_ids]
+
         enabled = call.data.get("enabled")
 
-        _LOGGER.info("🔵 SERVICE CALLED: set_enabled(entity=%s, enabled=%s)", entity_id, enabled)
+        for entity_id in entity_ids:
+            _LOGGER.info(
+                "🔵 SERVICE CALLED: set_enabled(entity=%s, enabled=%s)",
+                entity_id,
+                enabled,
+            )
 
-        for entry_id, data in hass.data[DOMAIN].items():
-            if isinstance(data, dict) and "coordinator" in data:
-                coordinator = data["coordinator"]
-                
-                entity_registry = er.async_get(hass)
-                for entity_entry in entity_registry.entities.values():
-                    if (entity_entry.config_entry_id == coordinator.config_entry.entry_id 
-                        and entity_entry.entity_id == entity_id):
-                        _LOGGER.info("✅ Found matching coordinator for entity_id=%s", entity_id)
-                        await coordinator.async_set_enabled(enabled)
-                        return
-        
-        _LOGGER.warning("❌ No coordinator found for entity_id=%s", entity_id)
+            # Find the coordinator for this entity
+            for entry_id, data in hass.data[DOMAIN].items():
+                if isinstance(data, dict) and "coordinator" in data:
+                    coordinator = data["coordinator"]
+
+                    entity_registry = er.async_get(hass)
+                    for entity_entry in entity_registry.entities.values():
+                        if (
+                            entity_entry.config_entry_id
+                            == coordinator.config_entry.entry_id
+                            and entity_entry.entity_id == entity_id
+                        ):
+                            _LOGGER.info(
+                                "✅ Found matching coordinator for entity_id=%s",
+                                entity_id,
+                            )
+                            await coordinator.async_set_enabled(enabled)
+                            break
+                    else:
+                        continue
+                    break
+            else:
+                _LOGGER.warning("❌ No coordinator found for entity_id=%s", entity_id)
 
     # Register services if not already registered
     if not hass.services.has_service(DOMAIN, SERVICE_TOGGLE_SLOT):
@@ -238,8 +326,10 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             handle_toggle_slot,
             schema=vol.Schema(
                 {
-                    vol.Required("entity_id"): cv.entity_id,
-                    vol.Required(ATTR_HOUR): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
+                    vol.Optional("entity_id"): cv.entity_id,
+                    vol.Required(ATTR_HOUR): vol.All(
+                        vol.Coerce(int), vol.Range(min=0, max=23)
+                    ),
                     vol.Required(ATTR_MINUTE): vol.In([0, 30]),
                 }
             ),
@@ -252,7 +342,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             handle_set_slots,
             schema=vol.Schema(
                 {
-                    vol.Required("entity_id"): cv.entity_id,
+                    vol.Optional("entity_id"): cv.entity_id,
                     vol.Required(ATTR_SLOTS): vol.All(cv.ensure_list, [dict]),
                 }
             ),
@@ -265,11 +355,11 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             handle_clear_all,
             schema=vol.Schema(
                 {
-                    vol.Required("entity_id"): cv.entity_id,
+                    vol.Optional("entity_id"): cv.entity_id,
                 }
             ),
         )
-    
+
     if not hass.services.has_service(DOMAIN, SERVICE_SET_ENABLED):
         hass.services.async_register(
             DOMAIN,
@@ -277,7 +367,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             handle_set_enabled,
             schema=vol.Schema(
                 {
-                    vol.Required("entity_id"): cv.entity_id,
+                    vol.Optional("entity_id"): cv.entity_id,
                     vol.Required("enabled"): cv.boolean,
                 }
             ),
@@ -289,7 +379,7 @@ async def _async_install_card(hass: HomeAssistant) -> None:
     try:
         # Get the integration path
         integration_path = Path(__file__).parent
-        
+
         # Get version from manifest
         manifest_path = integration_path / "manifest.json"
         version = "1.0.0"
@@ -299,18 +389,18 @@ async def _async_install_card(hass: HomeAssistant) -> None:
                 version = manifest.get("version", "1.0.0")
         except Exception as err:
             _LOGGER.warning("Could not read version from manifest: %s", err)
-        
+
         # Source files
         card_js_source = integration_path / "dist" / "timer-24h-card.js"
         editor_js_source = integration_path / "dist" / "timer-24h-card-editor.js"
-        
+
         # Destination directory
         www_dir = Path(hass.config.path("www"))
         card_dir = www_dir / "timer-24h-card"
-        
+
         # Create directory if it doesn't exist
         card_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Copy files if they exist
         if card_js_source.exists():
             shutil.copy2(card_js_source, card_dir / "timer-24h-card.js")
@@ -321,17 +411,14 @@ async def _async_install_card(hass: HomeAssistant) -> None:
                 "You may need to build the card first.",
                 card_js_source,
             )
-            
+
         if editor_js_source.exists():
             shutil.copy2(editor_js_source, card_dir / "timer-24h-card-editor.js")
-        
+
         _LOGGER.info(
             "✅ Timer 24H Card v%s files installed successfully to www/timer-24h-card/",
-            version
+            version,
         )
-        
+
     except Exception as err:
         _LOGGER.error("Failed to install Timer 24H Card: %s", err)
-
-
-
