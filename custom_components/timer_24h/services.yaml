@@ -1,0 +1,84 @@
+toggle_slot:
+  name: Toggle Time Slot
+  description: Toggles a specific time slot on or off for the 24-hour timer.
+  fields:
+    entity_id:
+      name: Entity
+      description: The timer entity to modify.
+      required: true
+      selector:
+        entity:
+          integration: timer_24h
+          domain: sensor
+    hour:
+      name: Hour
+      description: The hour of the time slot (0-23).
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 23
+          mode: box
+    minute:
+      name: Minute
+      description: The minute of the time slot (0 or 30).
+      required: true
+      selector:
+        select:
+          options:
+            - label: "00"
+              value: 0
+            - label: "30"
+              value: 30
+
+set_slots:
+  name: Set Time Slots
+  description: Sets multiple time slots at once, replacing all existing slots.
+  fields:
+    entity_id:
+      name: Entity
+      description: The timer entity to modify.
+      required: true
+      selector:
+        entity:
+          integration: timer_24h
+          domain: sensor
+    slots:
+      name: Time Slots
+      description: List of time slots to enable. Each slot must have 'hour' (0-23) and 'minute' (0 or 30) keys.
+      required: true
+      example: '[{"hour": 8, "minute": 0}, {"hour": 12, "minute": 30}]'
+      selector:
+        object:
+
+clear_all:
+  name: Clear All Time Slots
+  description: Removes all configured time slots from the timer.
+  fields:
+    entity_id:
+      name: Entity
+      description: The timer entity to clear.
+      required: true
+      selector:
+        entity:
+          integration: timer_24h
+          domain: sensor
+
+set_enabled:
+  name: Set Enabled State
+  description: Enables or disables the timer without removing time slots.
+  fields:
+    entity_id:
+      name: Entity
+      description: The timer entity to enable or disable.
+      required: true
+      selector:
+        entity:
+          integration: timer_24h
+          domain: sensor
+    enabled:
+      name: Enabled
+      description: Whether to enable or disable the timer.
+      required: true
+      selector:
+        boolean:
